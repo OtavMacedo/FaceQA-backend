@@ -1,0 +1,22 @@
+services:
+  postgres_database:
+    image: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: postgres_faceqa
+      POSTGRES_USER: admin_faceqa
+      POSTGRES_PASSWORD: teste
+    ports:
+      - "5432:5432"
+
+  faceqa_backend:
+    image: faceqa_backend
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres_database
+
+volumes:
+  pgdata:
