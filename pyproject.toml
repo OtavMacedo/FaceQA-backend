@@ -42,7 +42,7 @@ pythonpath = "./app/"
 addopts = '-p no:warnings'
 
 [tool.taskipy.tasks]
-run = 'fastapi dev src/app.py'
+run = 'fastapi dev app/main.py'
 
 pre_test = 'task lint'
 test = 'pytest --cov=src -vv'
