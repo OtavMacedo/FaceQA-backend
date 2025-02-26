@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from app.repositories.user.user_repository import UserRepository
 from app.schemas.user.user_schemas import UserSchema
 
-router = APIRouter()
+router = APIRouter(prefix='/user', tags=['User'])
 
 
 @router.post('/create_user')
