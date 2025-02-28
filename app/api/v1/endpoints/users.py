@@ -12,15 +12,13 @@ router = APIRouter()
     '/users', status_code=HTTPStatus.CREATED, response_model=UserPublic
 )
 async def create_user(
-    user: UserSchema,
-    user_repository: UserRepository = Depends(UserRepository)
+    user: UserSchema, user_repository: UserRepository = Depends(UserRepository)
 ):
     db_user = await user_repository.read_by_email(user.email)
 
     if db_user:
         raise HTTPException(
-            status_code=HTTPStatus.BAD_REQUEST,
-            detail='Email already exists'
+            status_code=HTTPStatus.BAD_REQUEST, detail='Email already exists'
         )
     db_user = await user_repository.create(user)
     return db_user
@@ -30,5 +28,5 @@ async def create_user(
 #     '/users', status_code=HTTPStatus.OK, response_model=UserPublic
 # )
 # async def update_user(
-    
+
 # )
