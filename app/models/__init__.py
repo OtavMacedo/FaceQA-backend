@@ -1,1 +1,1 @@
-from app.models.user import user_model  # noqa
+from app.models import api_token, user, refresh_token  # noqa
