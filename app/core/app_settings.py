@@ -15,6 +15,7 @@ class AppSettings(BaseSettings):
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 5
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    ALGORITHM: str = 'HS256'
 
     POSTGRES_SERVER: str
     POSTGRES_PORT: int = 5432
