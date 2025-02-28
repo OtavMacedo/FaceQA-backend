@@ -11,7 +11,7 @@ from app import models  #noqa
 
 from app.core.app_settings import settings
 
-from app.core.database.registry import table_registry
+from app.database.registry import table_registry
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
