@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.repositories.user import UserRepository
 from app.schemas.user import UserPublic, UserSchema
 
-router = APIRouter()
+router = APIRouter(tags=['User'])
 
 
 @router.post(
