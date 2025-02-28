@@ -22,7 +22,7 @@ class UserRepository:
 
         return db_user
 
-    async def read_by_email(self, email: str):
+    async def read_by_email(self, email: str) -> User:
         db_user = await self.session.scalar(
             Select(User).where(User.email == email)
         )
