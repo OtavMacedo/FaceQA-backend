@@ -12,7 +12,7 @@ class UserRepository:
     def __init__(self, session: AsyncSession = Depends(get_session)):
         self.session = session
 
-    async def create(self, user: UserSchema):
+    async def create(self, user: UserSchema) -> User:
         db_user = User(
             email=user.email, hashed_password=get_password_hash(user.password)
         )
