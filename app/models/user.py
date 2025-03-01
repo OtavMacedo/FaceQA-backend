@@ -1,9 +1,10 @@
 from datetime import datetime
 
 from sqlalchemy import func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.registry import table_registry
+from app.models.refresh_token import RefreshToken
 
 
 @table_registry.mapped_as_dataclass
@@ -20,4 +21,10 @@ class User:
         init=False,
         server_default=func.now(),
         onupdate=func.now(),
+    )
+    refresh_tokens: Mapped[list['RefreshToken']] = relationship(
+        'RefreshToken',
+        back_populates='user',
+        default_factory=list,
+        cascade='all, delete',
     )
