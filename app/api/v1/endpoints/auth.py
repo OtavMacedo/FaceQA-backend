@@ -10,7 +10,7 @@ from app.schemas.tokens import LoginToken
 router = APIRouter(prefix='/auth', tags=['Auth'])
 
 
-@router.post('/token', status_code=HTTPStatus.OK, response_model=LoginToken)
+@router.post('/login', status_code=HTTPStatus.OK, response_model=LoginToken)
 async def login(
     user_repository: UserRepository = Depends(UserRepository),
     form_data: OAuth2PasswordRequestForm = Depends(),
