@@ -27,3 +27,7 @@ class UserRepository:
             Select(User).where(User.email == email)
         )
         return db_user
+
+    async def delete(self, user: User):
+        await self.session.delete(user)
+        await self.session.commit()
