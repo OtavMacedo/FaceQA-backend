@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy import Select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.security import get_password_hash
+from app.core.security import get_hash
 from app.database.session import get_session
 from app.models.user import User
 from app.schemas.user import UserSchema
@@ -13,14 +13,14 @@ class UserRepository:
         self.session = session
 
     async def create(self, user: UserSchema) -> User:
-        db_user = User(
-            email=user.email, hashed_password=get_password_hash(user.password)
+        new_user = User(
+            email=user.email, hashed_password=get_hash(user.password)
         )
-        self.session.add(db_user)
+        self.session.add(new_user)
         await self.session.commit()
-        await self.session.refresh(db_user)
+        await self.session.refresh(new_user)
 
-        return db_user
+        return new_user
 
     async def read_by_email(self, email: str) -> User:
         db_user = await self.session.scalar(
