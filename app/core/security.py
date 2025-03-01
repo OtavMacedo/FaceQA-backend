@@ -2,12 +2,19 @@ from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 
 import jwt
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
 from pwdlib import PasswordHash
+from sqlalchemy import Select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.app_settings import settings
+from app.database.session import get_session
+from app.models.user import User
 
 pwd_context = PasswordHash.recommended()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/api/v1/auth/login')
 
 
 def get_password_hash(password: str):
@@ -41,3 +48,25 @@ def verify_token(token: str):
             detail='Invalid token',
             headers={'WWW-Authenticate': 'Bearer'},
         )
+
+
+async def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    session: AsyncSession = Depends(get_session),
+):
+    credentials_exception = HTTPException(
+        status_code=HTTPStatus.UNAUTHORIZED,
+        detail='Could not validate credentials',
+        headers={'WWW-Authenticate': 'Bearer'},
+    )
+    payload = verify_token(token)
+
+    email = payload.get('sub')
+    if not email:
+        raise credentials_exception
+
+    user = await session.scalar(Select(User).where(User.email == email))
+    if not user:
+        raise credentials_exception
+
+    return user
