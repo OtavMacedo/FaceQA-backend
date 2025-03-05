@@ -4,7 +4,6 @@ from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.registry import table_registry
-from app.models.user import User
 
 
 @table_registry.mapped_as_dataclass
@@ -18,7 +17,7 @@ class RefreshToken:
         init=False, server_default=func.now()
     )
     expires_at: Mapped[datetime]
-    user: Mapped['User'] = relationship(
+    user: Mapped['User'] = relationship(  # noqa: F821
         'User', back_populates='refresh_tokens'
     )
     revoked: Mapped[bool] = mapped_column(default=False)

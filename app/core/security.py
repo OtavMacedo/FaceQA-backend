@@ -1,3 +1,4 @@
+import secrets
 from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 
@@ -17,11 +18,11 @@ pwd_context = PasswordHash.recommended()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/api/v1/auth/login')
 
 
-def get_password_hash(password: str):
+def get_hash(password: str):
     return pwd_context.hash(password)
 
 
-def verify_password(plain_password: str, hashed_password: str):
+def verify_hash(plain_password: str, hashed_password: str):
     return pwd_context.verify(plain_password, hashed_password)
 
 
@@ -34,7 +35,7 @@ def create_access_token(data: dict):
     return jwt.encode(to_encode, settings.SECRET_KEY, settings.ALGORITHM)
 
 
-def verify_token(token: str):
+def verify_access_token(token: str):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, settings.ALGORITHM)
         return payload
@@ -59,7 +60,7 @@ async def get_current_user(
         detail='Could not validate credentials',
         headers={'WWW-Authenticate': 'Bearer'},
     )
-    payload = verify_token(token)
+    payload = verify_access_token(token)
 
     email = payload.get('sub')
     if not email:
@@ -70,3 +71,12 @@ async def get_current_user(
         raise credentials_exception
 
     return user
+
+
+def create_refresh_token():
+    token = secrets.token_hex(32)
+    expire = datetime.now(tz=timezone.utc) + timedelta(
+        days=settings.REFRESH_TOKEN_EXPIRE_DAYS
+    )
+
+    return {'token': token, 'expires_at': expire}

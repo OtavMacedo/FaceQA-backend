@@ -22,5 +22,3 @@ class RefreshTokenRepository:
         self.session.add(new_token)
         await self.session.commit()
         await self.session.refresh(new_token)
-
-        return new_token
