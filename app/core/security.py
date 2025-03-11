@@ -74,6 +74,7 @@ async def get_current_user(
 
 
 def create_refresh_token():
+    """Fora de uso no momento"""
     token = secrets.token_hex(32)
     expire = datetime.now(tz=timezone.utc) + timedelta(
         days=settings.REFRESH_TOKEN_EXPIRE_DAYS
