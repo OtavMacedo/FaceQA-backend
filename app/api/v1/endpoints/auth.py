@@ -33,10 +33,13 @@ async def login(
 
     access_token = create_access_token({'sub': form_data.username})
 
-    refresh_token = create_refresh_token()
-    refresh_token.update({'user': user})
+    refresh_token, expire = create_refresh_token()
 
-    await refresh_token_repository.create(**refresh_token)
+    await refresh_token_repository.create(
+        token=refresh_token,
+        expire=expire,
+        user=user
+    )
 
     return {
         'access_token': access_token,

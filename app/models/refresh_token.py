@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import ForeignKey, func
+from sqlalchemy import DateTime, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.registry import table_registry
@@ -16,8 +16,8 @@ class RefreshToken:
     created_at: Mapped[datetime] = mapped_column(
         init=False, server_default=func.now()
     )
-    expires_at: Mapped[datetime]
-    user: Mapped['User'] = relationship(  # noqa: F821
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    user: Mapped['User'] = relationship(  # noqa: F821 # type: ignore
         'User', back_populates='refresh_tokens'
     )
     revoked: Mapped[bool] = mapped_column(default=False)

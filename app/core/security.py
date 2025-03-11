@@ -79,4 +79,4 @@ def create_refresh_token():
         days=settings.REFRESH_TOKEN_EXPIRE_DAYS
     )
 
-    return {'token': token, 'expires_at': expire}
+    return token, expire

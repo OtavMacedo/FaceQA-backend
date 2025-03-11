@@ -14,10 +14,10 @@ class RefreshTokenRepository:
         self.session = session
 
     async def create(
-        self, token: str, expires_at: datetime, user: User
+        self, token: str, expire: datetime, user: User
     ) -> RefreshToken:
         new_token = RefreshToken(
-            token=get_hash(token), expires_at=expires_at, user=user
+            token=get_hash(token), expires_at=expire, user=user
         )
         self.session.add(new_token)
         await self.session.commit()
