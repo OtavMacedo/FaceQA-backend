@@ -26,8 +26,25 @@ class UserRepository:
         db_user = await self.session.scalar(
             Select(User).where(User.email == email)
         )
+
         return db_user
 
-    async def delete(self, user: User):
-        await self.session.delete(user)
+    async def delete_me(self, current_user: User):
+        db_user = self.read_by_email(current_user.email)
+        if not db_user:
+            return False
+
+        await self.session.delete(current_user)
         await self.session.commit()
+
+        return True
+
+    async def update_password_me(self, current_user: User, new_password: str):
+        db_user = self.read_by_email(current_user.email)
+        if not db_user:
+            return False
+
+        current_user.hashed_password = get_hash(new_password)
+        await self.session.commit()
+
+        return True

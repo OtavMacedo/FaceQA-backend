@@ -18,5 +18,6 @@ class UserList(BaseModel):
     users: list[UserPublic]
 
 
-class UserDB(UserSchema):
-    id: int
+class UpdatePassword(BaseModel):
+    current_password: str
+    new_password: str
