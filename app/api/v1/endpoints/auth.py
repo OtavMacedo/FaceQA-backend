@@ -28,7 +28,4 @@ async def login(
 
     access_token = create_access_token({'sub': form_data.username})
 
-    return {
-        'access_token': access_token,
-        'token_type': 'Bearer'
-    }
+    return {'access_token': access_token, 'token_type': 'Bearer'}
