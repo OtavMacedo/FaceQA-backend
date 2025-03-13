@@ -12,8 +12,8 @@ class AppSettings(BaseSettings):
     )
     PROJECT_NAME: str = 'changename'
     API_V1_STR: str = '/api/v1'
-    SECRET_KEY: str
-    AES_SECRET_KEY: str
+    JWT_SECRET_KEY: str
+    HMAC_SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 5
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     ALGORITHM: str = 'HS256'

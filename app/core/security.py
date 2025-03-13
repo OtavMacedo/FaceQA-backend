@@ -3,7 +3,6 @@ from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 
 import jwt
-from cryptography.fernet import Fernet
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from pwdlib import PasswordHash
@@ -15,8 +14,6 @@ from app.database.session import get_session
 from app.models.user import User
 
 pwd_context = PasswordHash.recommended()
-
-crypt_context = Fernet(settings.SECRET_KEY.encode())
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/api/v1/auth/login')
 
@@ -35,12 +32,14 @@ def create_access_token(data: dict):
         minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
     )
     to_encode.update({'exp': expire})
-    return jwt.encode(to_encode, settings.SECRET_KEY, settings.ALGORITHM)
+    return jwt.encode(to_encode, settings.JWT_SECRET_KEY, settings.ALGORITHM)
 
 
 def verify_access_token(token: str):
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, settings.ALGORITHM)
+        payload = jwt.decode(
+            token, settings.JWT_SECRET_KEY, settings.ALGORITHM
+        )
         return payload
     except jwt.ExpiredSignatureError:
         raise HTTPException(
