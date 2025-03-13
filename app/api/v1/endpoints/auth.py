@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from app.core.security import (
     create_access_token,
-    verify_hash,
+    verify_password,
 )
 from app.repositories.user import UserRepository
 from app.schemas.tokens import LoginToken
@@ -19,7 +19,9 @@ async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
 ):
     user = await user_repository.read_by_email(form_data.username)
-    if not user or not verify_hash(form_data.password, user.hashed_password):
+    if not user or not verify_password(
+        form_data.password, user.hashed_password
+    ):
         raise HTTPException(
             status_code=HTTPStatus.UNAUTHORIZED,
             detail='Incorrect username or password',
