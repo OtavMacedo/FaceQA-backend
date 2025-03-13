@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 
 import jwt
+from cryptography.fernet import Fernet
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from pwdlib import PasswordHash
@@ -15,14 +16,16 @@ from app.models.user import User
 
 pwd_context = PasswordHash.recommended()
 
+crypt_context = Fernet(settings.SECRET_KEY.encode())
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/api/v1/auth/login')
 
 
-def get_hash(password: str):
+def get_password_hash(password: str):
     return pwd_context.hash(password)
 
 
-def verify_hash(plain_password: str, hashed_password: str):
+def verify_password(plain_password: str, hashed_password: str):
     return pwd_context.verify(plain_password, hashed_password)
 
 
