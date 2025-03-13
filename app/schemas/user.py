@@ -18,6 +18,10 @@ class UserList(BaseModel):
     users: list[UserPublic]
 
 
+class UserUpdateMe(BaseModel):
+    email: EmailStr
+
+
 class UpdatePassword(BaseModel):
     current_password: str
     new_password: str
