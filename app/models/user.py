@@ -21,11 +21,11 @@ class User:
         server_default=func.now(),
         onupdate=func.now(),
     )
-    api_keys: Mapped[list["APIKey"]] = relationship(  # noqa: F821 # type: ignore
-        "APIKey",
-        back_populates="user",
+    api_keys: Mapped[list['APIKey']] = relationship(  # noqa: F821 # type: ignore
+        'APIKey',
+        back_populates='user',
         cascade='all, delete',
-        default_factory=list
+        default_factory=list,
     )
     # refresh_tokens: Mapped[list['RefreshToken']] = relationship(
     #     'RefreshToken',
