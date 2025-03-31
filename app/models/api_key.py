@@ -16,6 +16,7 @@ class APIKey:
     )
     user: Mapped['User'] = relationship('User', back_populates='api_keys')  # noqa: F821 # type: ignore
     hashed_key: Mapped[str] = mapped_column(unique=True, nullable=False)
+    suffix: Mapped[str] = mapped_column(nullable=False)
     last_request: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=True, init=False, default=None
     )
