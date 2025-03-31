@@ -13,6 +13,7 @@ class User:
     id: Mapped[int] = mapped_column(init=False, primary_key=True)
     email: Mapped[str] = mapped_column(unique=True)
     hashed_password: Mapped[str]
+    api_credits: Mapped[int] = mapped_column(init=False, default=0)
     created_at: Mapped[datetime] = mapped_column(
         init=False, server_default=func.now()
     )
