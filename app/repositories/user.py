@@ -12,7 +12,7 @@ class UserRepository:
     def __init__(self, session: AsyncSession = Depends(get_session)):
         self.session = session
 
-    async def create(self, user: UserSchema) -> User:
+    async def create(self, user: UserSchema):
         new_user = User(
             email=user.email, hashed_password=get_password_hash(user.password)
         )
@@ -22,7 +22,7 @@ class UserRepository:
 
         return new_user
 
-    async def read_by_email(self, email: str) -> User:
+    async def read_by_email(self, email: str):
         db_user = await self.session.scalar(
             Select(User).where(User.email == email)
         )
@@ -42,3 +42,7 @@ class UserRepository:
         await self.session.refresh(current_user)
 
         return current_user
+
+    async def update_credits_me(self, current_user: User, amount: int):
+        current_user.api_credits += amount
+        await self.session.commit()
