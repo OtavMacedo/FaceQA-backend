@@ -28,6 +28,11 @@ class User:
         cascade='all, delete',
         default_factory=list,
     )
+    transactions: Mapped[list['CreditTransaction']] = relationship(  # noqa: F821 # type: ignore
+        'CreditTransaction',
+        back_populates='user',
+        default_factory=list,
+    )
     # refresh_tokens: Mapped[list['RefreshToken']] = relationship(
     #     'RefreshToken',
     #     back_populates='user',
