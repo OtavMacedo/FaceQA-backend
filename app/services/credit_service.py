@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException
 from app.models.user import User
 from app.repositories.credit_transaction import CreditTransactionRepository
 from app.repositories.user import UserRepository
-from app.schemas.credits import CreditPurchaseTransaction
+from app.schemas.credits import CreditTransaction
 
 
 class CreditService:
@@ -23,16 +23,43 @@ class CreditService:
         if amount < 1:
             raise HTTPException(
                 status_code=HTTPStatus.BAD_REQUEST,
-                detail='The minimum purchase amount is 1 credit.',
+                detail='Minimum amount to purchase is 1 credit',
             )
 
         await self.credit_repo.create_transaction(
             user=user, amount=amount, transaction_type=transaction_type
         )
-        await self.user_repo.update_credits_me(user, amount)
+        await self.user_repo.update_credits_me(
+            current_user=user, amount=amount
+        )
 
-        return CreditPurchaseTransaction(
-            amount=amount,
-            transaction_type=transaction_type,
-            user=user.email
+        return CreditTransaction(
+            amount=amount, transaction_type=transaction_type, user=user.email
+        )
+
+    async def consume_credits(self, amount: int, user: User):
+        transaction_type = 'usage'
+
+        if amount < 1:
+            raise HTTPException(
+                status_code=HTTPStatus.BAD_REQUEST,
+                detail='Minimum amount to spend is 1 credit',
+            )
+
+        if user.api_credits < amount:
+            raise HTTPException(
+                status_code=HTTPStatus.PAYMENT_REQUIRED,
+                detail='Insufficient credits',
+            )
+        to_spend = -amount
+
+        await self.credit_repo.create_transaction(
+            user=user, amount=amount, transaction_type=transaction_type
+        )
+        await self.user_repo.update_credits_me(
+            current_user=user, amount=to_spend
+        )
+
+        return CreditTransaction(
+            amount=amount, transaction_type=transaction_type, user=user.email
         )

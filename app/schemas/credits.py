@@ -5,7 +5,7 @@ class CreditPurchaseAmount(BaseModel):
     amount: int
 
 
-class CreditPurchaseTransaction(BaseModel):
+class CreditTransaction(BaseModel):
     amount: int
     transaction_type: str
     user: str
