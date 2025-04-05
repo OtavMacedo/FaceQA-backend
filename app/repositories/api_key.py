@@ -8,7 +8,7 @@ from app.models.user import User
 from app.services.api_key_service import get_api_key_hash
 
 
-class APIKeyRepository:
+class ApiKeyRepository:
     def __init__(self, session: AsyncSession = Depends(get_session)):
         self.session = session
 
