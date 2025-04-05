@@ -8,7 +8,7 @@ from app.core.security import (
     verify_password,
 )
 from app.repositories.user import UserRepository
-from app.schemas.tokens import LoginToken
+from app.schemas.auth import LoginToken
 
 router = APIRouter(prefix='/auth', tags=['Auth'])
 
