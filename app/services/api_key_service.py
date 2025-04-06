@@ -5,16 +5,32 @@ from http import HTTPStatus
 
 from fastapi import Depends, HTTPException
 
+from app.models.user import User
 from app.repositories.api_key import ApiKeyRepository
+from app.repositories.user import UserRepository
+from app.schemas.api_key import APIKeySchema
 
 
 class ApiKeyService:
-    def __init__(self, api_key_repo: ApiKeyRepository = Depends()):
+    def __init__(
+        self,
+        api_key_repo: ApiKeyRepository = Depends(),
+        user_repo: UserRepository = Depends()
+    ):
         self.api_key_repo = api_key_repo
+        self.user_repo = user_repo
 
-    @staticmethod
-    def generate_api_key():
-        return secrets.token_hex(16)
+    async def generate_api_key(self, user: User):
+        api_key = secrets.token_hex(16)
+        suffix = self.get_suffix(api_key)
+
+        hashed_key = self.get_api_key_hash(api_key)
+
+        await self.api_key_repo.create(
+            hashed_key=hashed_key, suffix=suffix, user=user
+        )
+
+        return APIKeySchema(api_key=api_key)
 
     @staticmethod
     def get_api_key_hash(api_key: str):
@@ -38,5 +54,6 @@ class ApiKeyService:
             raise HTTPException(
                 status_code=HTTPStatus.UNAUTHORIZED, detail='Invalid API key'
             )
+        user = await self.user_repo.read_by_id(db_key.user_id)
 
-        return db_key.user
+        return user
