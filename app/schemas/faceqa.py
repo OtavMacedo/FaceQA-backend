@@ -6,4 +6,4 @@ class FaceQARequest(BaseModel):
 
 
 class FaceQAResponse(BaseModel):
-    pass
+    quality_score: float
