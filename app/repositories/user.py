@@ -28,6 +28,12 @@ class UserRepository:
         )
         return db_user
 
+    async def read_by_id(self, user_id: int):
+        db_user = await self.session.scalar(
+            Select(User).where(User.id == user_id)
+        )
+        return db_user
+
     async def delete_me(self, current_user: User):
         await self.session.delete(current_user)
         await self.session.commit()
