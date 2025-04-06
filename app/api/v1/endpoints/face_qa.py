@@ -1,29 +1,19 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 
-from app.repositories.api_key import APIKeyRepository
+from app.schemas.faceqa import FaceQAResponse
+from app.services.faceqa_service import FaceQAService
 
 router = APIRouter(prefix='/faceqa', tags=['FaceQA'])
 
 
-@router.post('/', status_code=HTTPStatus.OK)
+@router.post('/', status_code=HTTPStatus.OK, response_model=FaceQAResponse)
 async def verify_quality(
     api_key: str,
-    face_image: str,
-    api_key_repository: APIKeyRepository = Depends(APIKeyRepository),
+    faceqa_service: FaceQAService = Depends(),
 ):
-    api_suffix = api_key[-5:]
-    db_key = await api_key_repository.read_by_suffix(api_suffix)
-
-    if not db_key:
-        raise HTTPException(
-            status_code=HTTPStatus.UNAUTHORIZED, detail='Invalid API key'
-        )
-    key_owner = db_key.user
-
-    if key_owner.api_credits < 1:
-        raise HTTPException(
-            status_code=HTTPStatus.FORBIDDEN, detail='Insufficient API credits'
-        )
-    pass
+    validated = await faceqa_service.validate_image(
+        api_key=api_key
+    )
+    return validated
