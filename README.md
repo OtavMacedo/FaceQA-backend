@@ -1,4 +1,3 @@
-```markdown
 # 🧠 FaceQA API
 
 API para validação da qualidade de imagens faciais (Face Quality Assessment) via modelo de machine learning.
