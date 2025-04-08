@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, func
+from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.registry import table_registry
@@ -18,7 +18,7 @@ class APIKey:
     hashed_key: Mapped[str] = mapped_column(unique=True, nullable=False)
     suffix: Mapped[str] = mapped_column(nullable=False)
     last_request: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=True, init=False, default=None
+        init=False, default=None, onupdate=func.now(),
     )
     request_count: Mapped[int] = mapped_column(default=0)
     created_at: Mapped[datetime] = mapped_column(

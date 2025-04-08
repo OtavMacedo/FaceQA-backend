@@ -4,11 +4,14 @@ import secrets
 from http import HTTPStatus
 
 from fastapi import Depends, HTTPException
+from fastapi.security.api_key import APIKeyHeader
 
 from app.models.user import User
 from app.repositories.api_key import ApiKeyRepository
 from app.repositories.user import UserRepository
 from app.schemas.api_key import APIKeySchema
+
+api_key_header = APIKeyHeader(name="X-API-Key")
 
 
 class ApiKeyService:
@@ -54,6 +57,14 @@ class ApiKeyService:
             raise HTTPException(
                 status_code=HTTPStatus.UNAUTHORIZED, detail='Invalid API key'
             )
-        user = await self.user_repo.read_by_id(db_key.user_id)
 
-        return user
+        return db_key
+
+    async def get_current_user_from_api_key(
+        self, api_key: str = Depends(api_key_header),
+    ):
+        db_key = await self.validate_api_key(api_key)
+
+        current_user = await self.user_repo.read_by_id(db_key.user_id)
+
+        return current_user
